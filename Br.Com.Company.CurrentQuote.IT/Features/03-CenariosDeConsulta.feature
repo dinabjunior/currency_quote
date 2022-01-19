@@ -41,3 +41,13 @@ Esquema do Cenário: 0303 - Consultar o valor da taxa por segmento de cliente
 		| Varejo       | 10   |
 		| Personnalite | 20   |
 		| Private      | 30   |
+
+Esquema do Cenário: 0303 - Consultar o valor da taxa por id de segmento de cliente
+	Quando o usuário consultar o valor da taxa pelo id "<Id>"
+	Então deve ser retornado o valor <Taxa>
+
+	Exemplos:
+		| Id                                   | Taxa |
+		| ecd6f401-751d-42b8-9528-82277b84e0f3 | 10   |
+		| 095c5d65-d232-4c2c-b01b-88944b225bb3 | 20   |
+		| 7a3c9372-0064-4f06-8276-e71ac87d700b | 30   |

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -32,31 +33,31 @@ namespace Br.Com.Company.CurrencyQuote.Domain.Services.Impl
 
         #region CRUD Methods
 
-        public async Task<Guid> CreateSegmentRateAsync(CreateSegmentRateRequestModel model)
+        public async Task<Guid> CreateSegmentRateAsync(CreateSegmentRateRequestModel model, CancellationToken cancellationToken = default)
         {
             var command = Mapper.Map<CreateSegmentRateCommand>(model);
-            return await Mediator.Send(command);
+            return await Mediator.Send(command, cancellationToken);
         }
 
-        public async Task UpdateSegmentRateAsync(UpdateSegmentRateRequestModel model)
+        public async Task UpdateSegmentRateAsync(UpdateSegmentRateRequestModel model, CancellationToken cancellationToken = default)
         {
             var command = Mapper.Map<UpdateSegmentRateCommand>(model);
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
         }
 
-        public async Task DeleteSegmentRateByIdAsync(Guid id) => await Mediator.Send(new DeleteSegmentRateCommand { Id = id });
+        public async Task DeleteSegmentRateByIdAsync(Guid id, CancellationToken cancellationToken = default) => await Mediator.Send(new DeleteSegmentRateCommand { Id = id }, cancellationToken);
 
-        public async Task<SegmentRateDto> GetSegmentRateByIdAsync(Guid id)
+        public async Task<SegmentRateDto> GetSegmentRateByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await Repository.Database<SegmentRate>()
                                     .Where(e => e.Id == id)
                                     .ProjectTo<SegmentRateDto>(Mapper.ConfigurationProvider)
-                                    .FirstOrDefaultAsync();
+                                    .FirstOrDefaultAsync(cancellationToken);
         }
 
         #endregion
 
-        public async Task<IEnumerable<SegmentRateDto>> SearchAsync(SearchRequestModel model)
+        public async Task<IEnumerable<SegmentRateDto>> SearchAsync(SearchRequestModel model, CancellationToken cancellationToken = default)
         {
             var query = Repository.Database<SegmentRate>().AsQueryable();
             if (model.Segment.HasValue)
@@ -64,10 +65,10 @@ namespace Br.Com.Company.CurrencyQuote.Domain.Services.Impl
                 query = query.Where(e => e.Segment == model.Segment);
             }
 
-            return await query.ProjectTo<SegmentRateDto>(Mapper.ConfigurationProvider).ToListAsync();
+            return await query.ProjectTo<SegmentRateDto>(Mapper.ConfigurationProvider).ToListAsync(cancellationToken);
         }
 
-        public async Task<RateDto> GetRateBySegmentAsync(SearchRateRequestModel model)
+        public async Task<RateDto> GetRateBySegmentAsync(SearchRateRequestModel model, CancellationToken cancellationToken = default)
         {
             var query = Repository.Database<SegmentRate>().AsQueryable();
 
@@ -81,7 +82,7 @@ namespace Br.Com.Company.CurrencyQuote.Domain.Services.Impl
                 query = query.Where(e => e.Segment == model.Segment);
             }
 
-            return await query.ProjectTo<RateDto>(Mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            return await query.ProjectTo<RateDto>(Mapper.ConfigurationProvider).FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

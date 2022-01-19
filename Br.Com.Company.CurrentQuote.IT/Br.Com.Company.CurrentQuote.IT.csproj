@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\01-CenariosDeIncercaoDeDados - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\03-CenariosDeConsulta - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\04-CenariosCalculoConversaoComTaxaParametrizada - Copy.feature.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +31,7 @@
     <PackageReference Include="SpecFlow" Version="3.9.40" />
     <PackageReference Include="SpecFlow.xUnit" Version="3.9.40" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="WireMock.Net" Version="1.4.32" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,6 +46,12 @@
     <Compile Update="Features\02-CenariosDeAlteracaoDeDados.feature.cs">
       <DependentUpon>02-CenariosDeAlteracaoDeDados.feature</DependentUpon>
     </Compile>
+    <Compile Update="Features\05-CenariosCalculoConversaoSemTaxaParametrizada.feature.cs">
+      <DependentUpon>05-CenariosCalculoConversaoSemTaxaParametrizada.feature</DependentUpon>
+    </Compile>
+    <Compile Update="Features\04-CenariosCalculoConversaoComTaxaParametrizada.feature.cs">
+      <DependentUpon>04-CenariosCalculoConversaoComTaxaParametrizada.feature</DependentUpon>
+    </Compile>
     <Compile Update="Features\03-CenariosDeConsulta.feature.cs">
       <DependentUpon>03-CenariosDeConsulta.feature</DependentUpon>
     </Compile>
@@ -56,6 +65,14 @@
 
   <ItemGroup>
     <SpecFlowFeatureFiles Update="Features\02-CenariosDeAlteracaoDeDados.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\05-CenariosCalculoConversaoSemTaxaParametrizada.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\04-CenariosCalculoConversaoComTaxaParametrizada.feature">
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
     </SpecFlowFeatureFiles>

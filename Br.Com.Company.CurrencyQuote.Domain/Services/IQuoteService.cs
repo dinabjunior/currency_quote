@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Br.Com.Company.CurrencyQuote.Domain.Dtos.Quote;
 
 namespace Br.Com.Company.CurrencyQuote.Domain.Services
 {
     public interface IQuoteService
     {
-        Task<decimal> CalculateQuoteAsync(CalculateQuoteRequest request);
+        Task<decimal> CalculateQuoteAsync(CalculateQuoteRequest request, CancellationToken cancellationToken = default);
     }
 }

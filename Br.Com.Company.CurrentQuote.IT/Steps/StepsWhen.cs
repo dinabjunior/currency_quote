@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Br.Com.Company.CurrencyQuote.Data.Entities.Enums;
-using Br.Com.Company.CurrencyQuote.Domain.Dtos;
+using Br.Com.Company.CurrentQuote.IT.Mocks;
 using Br.Com.Company.CurrentQuote.IT.Models;
 using Br.Com.Company.CurrentQuote.IT.Models.Dtos;
 using FluentAssertions;
 using Flurl.Http;
+using Microsoft.Extensions.DependencyInjection;
 using TechTalk.SpecFlow;
 
 namespace Br.Com.Company.CurrentQuote.IT.Steps
@@ -24,7 +25,7 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
                 foreach (var newItem in itemsToInsert)
                 {
                     var flurlClient = new FlurlClient(HttpClient);
-                    var response = await flurlClient.Request("/api/quotation")
+                    var response = await flurlClient.Request("/api/configuration")
                                                     .PostJsonAsync(new
                                                     {
                                                         Rate = newItem.Rate,
@@ -40,7 +41,7 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
         public async Task QuandoOUsuarioAlterarATaxaDePara(Guid id, decimal rate)
         {
             var flurlClient = new FlurlClient(HttpClient);
-            var response = await flurlClient.Request("/api/quotation")
+            var response = await flurlClient.Request("/api/configuration")
                                             .PutJsonAsync(new
                                             {
                                                 Id = id,
@@ -54,7 +55,7 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
         public async Task QuandoOUsuarioDeletarATaxa(Guid id)
         {
             var flurlClient = new FlurlClient(HttpClient);
-            var response = await flurlClient.Request($"/api/quotation/{id}").DeleteAsync();
+            var response = await flurlClient.Request($"/api/configuration/{id}").DeleteAsync();
 
             response.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
         }
@@ -63,7 +64,7 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
         public async Task QuandoOUsuarioConsultarATaxaPeloId(Guid id)
         {
             var flurlClient = new FlurlClient(HttpClient);
-            var response = await flurlClient.Request($"/api/quotation/{id}").GetJsonAsync<TestSegmentRateDto>();
+            var response = await flurlClient.Request($"/api/configuration/{id}").GetJsonAsync<TestSegmentRateDto>();
 
             _scenarioContext[nameof(QuandoOUsuarioConsultarATaxaPeloId)] = response;
             _scenarioContext[nameof(EntaoDeveRetornarOsSeguintesRegistros)] = nameof(QuandoOUsuarioConsultarATaxaPeloId);
@@ -73,7 +74,7 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
         public async Task QuandoOUsuarioConsultarATaxaPeloSegmento(SegmentEnum segment)
         {
             var flurlClient = new FlurlClient(HttpClient);
-            var response = await flurlClient.Request($"/api/quotation/search")
+            var response = await flurlClient.Request($"/api/configuration/search")
                                             .SetQueryParam("segment", segment)
                                             .GetJsonAsync<IEnumerable<TestSegmentRateDto>>();
 
@@ -85,12 +86,42 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
         public async Task QuandoOUsuarioConsultarOValorDaTaxaPeloSegmento(SegmentEnum segment)
         {
             var flurlClient = new FlurlClient(HttpClient);
-            var response = await flurlClient.Request($"/api/quotation/searchRate")
+            var response = await flurlClient.Request($"/api/configuration/searchRate")
                                             .SetQueryParam("segment", segment)
                                             .GetJsonAsync<decimal>();
 
             _scenarioContext[nameof(QuandoOUsuarioConsultarOValorDaTaxaPeloSegmento)] = response;
             _scenarioContext[nameof(EntaoDeveSerRetornadoOValor)] = nameof(QuandoOUsuarioConsultarOValorDaTaxaPeloSegmento);
+        }
+
+        [When(@"o usuário consultar o valor da taxa pelo id ""(.*)""")]
+        public async Task QuandoOUsuarioConsultarOValorDaTaxaPeloId(Guid id)
+        {
+            var flurlClient = new FlurlClient(HttpClient);
+            var response = await flurlClient.Request($"/api/configuration/searchRate")
+                                            .SetQueryParam("id", id)
+                                            .GetJsonAsync<decimal>();
+
+            _scenarioContext[nameof(QuandoOUsuarioConsultarOValorDaTaxaPeloId)] = response;
+            _scenarioContext[nameof(EntaoDeveSerRetornadoOValor)] = nameof(QuandoOUsuarioConsultarOValorDaTaxaPeloId);
+        }
+
+        [When(@"o usuário solicitar o cálculo de conversão de (.*) ""(.*)"" para Real para o segmento ""(.*)""")]
+        public async Task QuandoOUsuarioSolicitarOCalculoDeConversaoDaMoedaParaRealParaOSegmentoVarejo(decimal value, ForeignCurrencyEnum currency, SegmentEnum segment)
+        {
+            var responseModel = new { Success = true, Base = "EUR", Rates = new { BRL = 1.00 } };
+            var exchangeMock = _factory.Services.GetRequiredService<ExchangeRatesApiMock>();
+            exchangeMock.SetupExchangeRatesApi(responseModel);
+
+            var flurlClient = new FlurlClient(HttpClient);
+            var response = await flurlClient.Request($"/api/quotation")
+                                            .SetQueryParam("qtdForeignCurrency", value)
+                                            .SetQueryParam("foreignCurrency", currency)
+                                            .SetQueryParam("segment", segment)
+                                            .GetJsonAsync<decimal>();
+
+            _scenarioContext[nameof(QuandoOUsuarioSolicitarOCalculoDeConversaoDaMoedaParaRealParaOSegmentoVarejo)] = response;
+            _scenarioContext[nameof(EntaoDeveSerRetornadoOValor)] = nameof(QuandoOUsuarioSolicitarOCalculoDeConversaoDaMoedaParaRealParaOSegmentoVarejo);
         }
     }
 }

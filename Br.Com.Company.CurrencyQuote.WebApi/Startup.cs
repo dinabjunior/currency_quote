@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using AutoMapper;
+using Br.Com.Company.CurrencyQuote.Common.Infraestructure.Filters;
 using Br.Com.Company.CurrencyQuote.Data.Infraestructure.Data;
 using Br.Com.Company.CurrencyQuote.Data.Persistence.Repository;
 using Br.Com.Company.CurrencyQuote.Domain.Dtos;
@@ -38,10 +39,15 @@ namespace Br.Com.Company.CurrencyQuote.WebApi
                     options.EnableForHttps = true;
                 });
 
-            services.AddData<DataContext>();
+            services.AddData<DataContext>(Configuration);
             services.AddDomainServices();
+            services.AddCommonServices();
 
             services
+                .AddMvc(options =>
+                {
+                    options.Filters.Add<NotificationFilter>();
+                })
                 .AddFluentValidation(fv =>
                 {
                     fv.RegisterValidatorsFromAssemblyContaining<IRepository>();

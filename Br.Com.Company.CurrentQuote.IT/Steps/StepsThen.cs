@@ -55,6 +55,20 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
                 rateValueBySegment.Should().NotBeNull();
                 rateValueBySegment.Should().Be(expectedValue);
             }
+            else if (Equals(scenario, nameof(QuandoOUsuarioConsultarOValorDaTaxaPeloId)))
+            {
+                var rateValueBySegment = _scenarioContext[nameof(QuandoOUsuarioConsultarOValorDaTaxaPeloId)] as decimal?;
+
+                rateValueBySegment.Should().NotBeNull();
+                rateValueBySegment.Should().Be(expectedValue);
+            }
+            else if (Equals(scenario, nameof(QuandoOUsuarioSolicitarOCalculoDeConversaoDaMoedaParaRealParaOSegmentoVarejo)))
+            {
+                var totalValue = _scenarioContext[nameof(QuandoOUsuarioSolicitarOCalculoDeConversaoDaMoedaParaRealParaOSegmentoVarejo)] as decimal?;
+
+                totalValue.Should().NotBeNull();
+                totalValue.Should().Be(expectedValue);
+            }
         }
     }
 }

@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Br.Com.Company.CurrencyQuote.Common\Br.Com.Company.CurrencyQuote.Common.csproj" />
     <ProjectReference Include="..\Br.Com.Company.CurrencyQuote.Data\Br.Com.Company.CurrencyQuote.Data.csproj" />
     <ProjectReference Include="..\Br.Com.Company.CurrencyQuote.Domain\Br.Com.Company.CurrencyQuote.Domain.csproj" />
   </ItemGroup>

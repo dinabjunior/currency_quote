@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Br.Com.Company.CurrencyQuote.Domain.Dtos.Quote;
 using Br.Com.Company.CurrencyQuote.Domain.Services;
@@ -22,11 +23,11 @@ namespace Br.Com.Company.CurrencyQuote.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CalculateQuote([FromQuery] CalculateQuoteRequest request)
+        public async Task<IActionResult> CalculateQuote([FromQuery] CalculateQuoteRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _quoteService.CalculateQuoteAsync(request);
+                var result = await _quoteService.CalculateQuoteAsync(request, cancellationToken);
                 return Ok(result);
             }
             catch (Exception ex)

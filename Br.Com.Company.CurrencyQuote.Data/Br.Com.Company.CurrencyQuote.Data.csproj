@@ -20,4 +20,8 @@
     <PackageReference Include="Flurl.Http" Version="3.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Br.Com.Company.CurrencyQuote.Common\Br.Com.Company.CurrencyQuote.Common.csproj" />
+  </ItemGroup>
+
 </Project>

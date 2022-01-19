@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Br.Com.Company.CurrencyQuote.Data.Entities;
@@ -25,14 +26,14 @@ namespace Br.Com.Company.CurrencyQuote.Domain.Services.Impl
         private IRepository Repository => _repository ??= _services.GetService<IRepository>();
         private IExchangeService ExchangeService => _exchangeService ??= _services.GetService<IExchangeService>();
 
-        public async Task<decimal> CalculateQuoteAsync(CalculateQuoteRequest request)
+        public async Task<decimal> CalculateQuoteAsync(CalculateQuoteRequest request, CancellationToken cancellationToken)
         {
             var segmentRate = await Repository.Database<SegmentRate>()
                                               .Where(e => e.Segment == request.Segment)
                                               .Select(e => e.Rate)
-                                              .FirstOrDefaultAsync();
+                                              .FirstOrDefaultAsync(cancellationToken);
 
-            var conversionRateValue = await ExchangeService.GetExchangeRateToReal(request.ForeignCurrency);
+            var conversionRateValue = await ExchangeService.GetExchangeRateToReal(request.ForeignCurrency, cancellationToken);
             return CalculateExchangeCurrencyToReal(request.QtdForeignCurrency, conversionRateValue, segmentRate);
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Br.Com.Company.CurrencyQuote.Data.Application.Commands.Quote;
 using Br.Com.Company.CurrencyQuote.Data.Entities.Enums;
 using MediatR;
@@ -14,9 +15,9 @@ namespace Br.Com.Company.CurrencyQuote.Domain.Services.Impl
             _mediator = mediator;
         }
 
-        public async Task<decimal> GetExchangeRateToReal(ForeignCurrencyEnum currency)
+        public async Task<decimal> GetExchangeRateToReal(ForeignCurrencyEnum currency, CancellationToken cancellationToken = default)
         {
-            return await _mediator.Send(new GetExchangeRateToRealCommand { ForeignCurrency = currency }).ConfigureAwait(false);
+            return await _mediator.Send(new GetExchangeRateToRealCommand { ForeignCurrency = currency }, cancellationToken).ConfigureAwait(false);
         }
     }
 }
