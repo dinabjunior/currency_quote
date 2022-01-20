@@ -11,6 +11,7 @@ namespace Br.Com.Company.CurrencyQuote.WebApi.Controllers
 {
     [ApiController]
     [Route("api/quotation")]
+    [Produces("application/json")]
     public class QuotationController : ControllerBase
     {
         private readonly IQuoteService _quoteService;
@@ -23,6 +24,8 @@ namespace Br.Com.Company.CurrencyQuote.WebApi.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CalculateQuote([FromQuery] CalculateQuoteRequest request, CancellationToken cancellationToken)
         {
             try
