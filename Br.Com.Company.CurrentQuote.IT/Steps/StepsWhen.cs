@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Br.Com.Company.CurrencyQuote.Data.Entities.Enums;
-using Br.Com.Company.CurrentQuote.IT.Mocks;
 using Br.Com.Company.CurrentQuote.IT.Models;
 using Br.Com.Company.CurrentQuote.IT.Models.Dtos;
 using FluentAssertions;
 using Flurl.Http;
-using Microsoft.Extensions.DependencyInjection;
 using TechTalk.SpecFlow;
 
 namespace Br.Com.Company.CurrentQuote.IT.Steps
@@ -109,10 +107,6 @@ namespace Br.Com.Company.CurrentQuote.IT.Steps
         [When(@"o usuário solicitar o cálculo de conversão de (.*) ""(.*)"" para Real para o segmento ""(.*)""")]
         public async Task QuandoOUsuarioSolicitarOCalculoDeConversaoDaMoedaParaRealParaOSegmentoVarejo(decimal value, ForeignCurrencyEnum currency, SegmentEnum segment)
         {
-            var responseModel = new { Success = true, Base = "EUR", Rates = new { BRL = 1.00 } };
-            var exchangeMock = _factory.Services.GetRequiredService<ExchangeRatesApiMock>();
-            exchangeMock.SetupExchangeRatesApi(responseModel);
-
             var flurlClient = new FlurlClient(HttpClient);
             var response = await flurlClient.Request($"/api/quotation")
                                             .SetQueryParam("qtdForeignCurrency", value)
